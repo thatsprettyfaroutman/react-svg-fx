@@ -1,6 +1,6 @@
 {
   "name": "react-svg-fx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -15,39 +15,48 @@
     "prepublishOnly": "npm run lint"
   },
   "keywords": [],
-  "author": "Viljami Anttonen",
+  "author": "Viljami Anttonen (thatsprettyfaroutman)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thatsprettyfaroutman/react-svg-fx.git"
+  },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16",
+    "react-dom": ">=16"
   },
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
-  "devDependencies": {
+  "dependencies": {
     "@types/d3-ease": "^3.0.0",
     "@types/ramda": "^0.28.18",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@types/styled-components": "^5.1.26",
+    "d3-ease": "^3.0.1",
+    "lerp": "^1.0.3",
+    "ramda": "^0.28.0",
+    "react-merge-refs": "^2.0.1",
+    "react-use-measure": "^2.1.1",
+    "styled-components": "^5.3.6",
+    "tslib": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
-    "d3-ease": "^3.0.1",
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "lerp": "^1.0.3",
     "prettier": "^2.7.1",
-    "ramda": "^0.28.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-merge-refs": "^2.0.1",
-    "react-use-measure": "^2.1.1",
-    "styled-components": "^5.3.6",
-    "tslib": "^2.4.1",
     "typescript": "^4.8.4"
   }
 }
