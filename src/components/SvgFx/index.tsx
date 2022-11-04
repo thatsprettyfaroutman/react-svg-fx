@@ -3,6 +3,8 @@ import { useSvgFx } from './hooks/useSvgFx'
 import { mergeRefs } from 'react-merge-refs'
 import { getElementFromHtml } from './lib'
 
+export * from './hooks/useSvgFx'
+
 export interface ISvgFxProps {
   svg?: string
   active?: boolean
