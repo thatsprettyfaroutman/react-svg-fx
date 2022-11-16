@@ -51,10 +51,9 @@ export const SvgFx: FC<ISvgFxProps> = ({
     const load = async () => {
       try {
         const svgString = await getSvgStringFromSrc(src)
-        if (!mounted.current) {
-          return
+        if (mounted.current) {
+          setSvgString(svgString)
         }
-        setSvgString(svgString)
       } catch (error) {
         // @ts-ignore
         console.error(error.message)
@@ -65,7 +64,7 @@ export const SvgFx: FC<ISvgFxProps> = ({
       }
     }
     load()
-  }, [src])
+  }, [src, mounted])
 
   // Update svg dom element when svg loaded
   useLayoutEffect(() => {

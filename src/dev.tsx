@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import styled, { css } from 'styled-components'
 import { SvgFx, TStatus } from './components/SvgFx'
@@ -27,7 +27,11 @@ const Demo = styled.div<{ error?: boolean }>`
 `
 const DemoName = styled.div``
 
-const DemoDemo = ({ name, src, ...restProps }) => {
+const DemoDemo: FC<{ name: string; src: string }> = ({
+  name,
+  src,
+  ...restProps
+}) => {
   const [status, setStatus] = useState<TStatus | undefined>()
   const [active, setActive] = useState(true)
   return (
