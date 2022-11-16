@@ -6,11 +6,17 @@ import { useTickHandlers } from './hooks/useTickHandlers'
 import { useMouse } from './hooks/useMouse'
 import { useFxItems } from './hooks/useFxItems'
 
-export const useSvgFx = ({ active = true, loading = false } = {}) => {
+export const useSvgFx = ({
+  active = true,
+  loading = false,
+}: {
+  active?: boolean
+  loading?: boolean
+} = {}) => {
   const [measureRef, { width, height }] = useMeasure()
   const svgRef = useRef<SVGSVGElement>()
   const ref = mergeRefs([measureRef, svgRef])
-  const items = useFxItems(svgRef, { loading })
+  const { items, updateItems } = useFxItems(svgRef, { loading })
 
   const attrHandler = useAttrHandler()
   const mouseRef = useMouse({ svgRef, width, height })
@@ -21,9 +27,16 @@ export const useSvgFx = ({ active = true, loading = false } = {}) => {
     mouseRef,
   })
 
+  const startTimeRef = useRef(performance.now())
+  useEffect(() => {
+    if (!loading && active) {
+      startTimeRef.current = performance.now()
+    }
+  }, [loading, active])
+
   useEffect(() => {
     let running = !loading && active
-    const startTime = performance.now()
+    const startTime = startTimeRef.current
     const n = items.length
     const tickProps = {
       elapsedTime: 0,
@@ -63,6 +76,13 @@ export const useSvgFx = ({ active = true, loading = false } = {}) => {
       if (!running) {
         return
       }
+
+      // Check if still connected, fix items if needed
+      if (!items[0].element.isConnected) {
+        running = false
+        updateItems()
+      }
+
       // Draw
       requestAnimationFrame(tick)
     }
@@ -72,7 +92,7 @@ export const useSvgFx = ({ active = true, loading = false } = {}) => {
     return () => {
       running = false
     }
-  }, [items, tickHandlers, attrHandler, active, loading])
+  }, [items, updateItems, tickHandlers, attrHandler, active, loading])
 
   return ref
 }

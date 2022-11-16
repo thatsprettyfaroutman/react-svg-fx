@@ -1,4 +1,10 @@
-import { useMemo, useLayoutEffect, useState, MutableRefObject } from 'react'
+import {
+  useMemo,
+  useLayoutEffect,
+  useCallback,
+  useState,
+  MutableRefObject,
+} from 'react'
 import { flatten } from 'ramda'
 import { TFx, TFxWithBox } from '../types'
 import { uid } from '../lib'
@@ -13,9 +19,9 @@ export const useFxItems = (
 ) => {
   const [items, setItems] = useState<TFx[]>([])
 
-  useLayoutEffect(() => {
+  const updateItems = useCallback(() => {
     const svg = svgRef?.current
-    if (loading || !svg) {
+    if (!svg) {
       return
     }
 
@@ -40,6 +46,7 @@ export const useFxItems = (
               ] as [TFxPropKey, TFxPropMap[TFxPropKey]],
           )
           const props = new Map(entries)
+
           if (props.size) {
             return {
               id: uid(),
@@ -60,30 +67,40 @@ export const useFxItems = (
     })
 
     setItems(flatItems)
-  }, [svgRef, loading])
+  }, [svgRef])
+
+  useLayoutEffect(() => {
+    if (!svgRef.current || loading) {
+      return
+    }
+    updateItems()
+  }, [svgRef, loading, updateItems])
 
   // Add boxes
-  return useMemo((): TFxWithBox[] => {
-    const svg = svgRef.current
+  return {
+    items: useMemo((): TFxWithBox[] => {
+      const svg = svgRef.current
 
-    if (!svg) {
-      return items
-    }
-
-    const viewBox = svg?.viewBox.baseVal
-    return items.map((item) => {
-      const box = (item.element as SVGPathElement).getBBox()
-      return {
-        ...item,
-        box: {
-          x: box.x,
-          y: box.y,
-          width: box.width,
-          height: box.height,
-          xMid: box.x + (box.width - viewBox.width) * 0.5,
-          yMid: box.y + (box.height - viewBox.height) * 0.5,
-        },
+      if (!svg) {
+        return items
       }
-    })
-  }, [svgRef, items])
+
+      const viewBox = svg?.viewBox.baseVal
+      return items.map((item) => {
+        const box = (item.element as SVGPathElement).getBBox()
+        return {
+          ...item,
+          box: {
+            x: box.x,
+            y: box.y,
+            width: box.width,
+            height: box.height,
+            xMid: box.x + (box.width - viewBox.width) * 0.5,
+            yMid: box.y + (box.height - viewBox.height) * 0.5,
+          },
+        }
+      })
+    }, [svgRef, items]),
+    updateItems,
+  }
 }
