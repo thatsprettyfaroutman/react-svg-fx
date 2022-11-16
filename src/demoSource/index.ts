@@ -1,6 +1,10 @@
+// @ts-ignore
 import demoSvgFx from './demo.svg'
+// @ts-ignore
 import demoSvg from './demo-no-fx.svg'
+// @ts-ignore
 import demoPng from './demo.png'
+// @ts-ignore
 import demoJpg from './demo.jpg'
 
 export const SVG_FX_URL = demoSvgFx
