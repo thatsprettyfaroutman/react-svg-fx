@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import useMeasure from 'react-use-measure'
-import { mergeRefs } from 'react-merge-refs'
+import mergeRefs from 'react-merge-refs'
 import { useAttrHandler } from './hooks/useAttrHandler'
 import { useTickHandlers } from './hooks/useTickHandlers'
 import { useMouse } from './hooks/useMouse'

@@ -1,6 +1,6 @@
 import React, { FC, useRef, useLayoutEffect, useState } from 'react'
 import { useSvgFx } from './hooks/useSvgFx'
-import { mergeRefs } from 'react-merge-refs'
+import mergeRefs from 'react-merge-refs'
 import { getElementFromHtml } from './lib'
 import { useMounted } from './hooks/useMounted'
 import { getSvgStringFromSrc } from '../../lib'

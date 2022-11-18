@@ -40,7 +40,7 @@
     "d3-ease": "^3.0.1",
     "lerp": "^1.0.3",
     "ramda": "^0.28.0",
-    "react-merge-refs": "^2.0.1",
+    "react-merge-refs": "1.1.0",
     "react-use-measure": "^2.1.1",
     "styled-components": "^5.3.6",
     "tslib": "^2.4.1"
