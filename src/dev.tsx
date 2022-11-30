@@ -13,6 +13,11 @@ const App = styled.div`
 `
 
 const Demo = styled.div<{ error?: boolean }>`
+  > * {
+    display: block;
+    max-width: 100%;
+  }
+
   ${(p) =>
     p.error &&
     css`

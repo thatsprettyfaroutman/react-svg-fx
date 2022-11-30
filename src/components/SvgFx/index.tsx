@@ -10,6 +10,7 @@ import {
 } from './hooks/useHandleStatus'
 
 export * from './hooks/useSvgFx'
+export { DEFAULT_FX_PROPS_MAP } from './hooks/useSvgFx/hooks/useTickHandlers'
 export { TStatus } from './hooks/useHandleStatus'
 
 export interface ISvgFxProps {

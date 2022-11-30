@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { TUseTickHandlerProps } from '../../types'
 import * as hover from './tickHandlers/hover'
+import * as light from './tickHandlers/light'
 import * as parallax from './tickHandlers/parallax'
 import * as rotate from './tickHandlers/rotate'
 import * as sparkle from './tickHandlers/sparkle'
@@ -12,6 +13,7 @@ import * as wobble from './tickHandlers/wobble'
 
 export const DEFAULT_FX_PROPS_MAP = {
   [hover.FX_NAME]: hover.FX_DEFAULT_PROPS,
+  [light.FX_NAME]: light.FX_DEFAULT_PROPS,
   [parallax.FX_NAME]: parallax.FX_DEFAULT_PROPS,
   [rotate.FX_NAME]: rotate.FX_DEFAULT_PROPS,
   [sparkle.FX_NAME]: sparkle.FX_DEFAULT_PROPS,
@@ -23,6 +25,7 @@ export const DEFAULT_FX_PROPS_MAP = {
 export const useTickHandlers = (props: TUseTickHandlerProps) => {
   const tickHandlers = [
     hover.useHook(props),
+    light.useHook(props),
     parallax.useHook(props),
     rotate.useHook(props),
     sparkle.useHook(props),

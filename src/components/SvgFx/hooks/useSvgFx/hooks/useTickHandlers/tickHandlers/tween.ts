@@ -40,6 +40,7 @@ export const useHook = ({ attrHandler }: TUseTickHandlerProps) => {
           return
         }
 
+        // TODO: interval should be added not subtracted
         const delay = props.delay - props.interval * index
 
         const time = Math.max(elapsedTime - delay, 0)

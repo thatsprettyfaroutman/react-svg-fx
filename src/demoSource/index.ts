@@ -1,4 +1,6 @@
 // @ts-ignore
+import demoSvgFxLight from './demo-light.svg'
+// @ts-ignore
 import demoSvgFx from './demo.svg'
 // @ts-ignore
 import demoSvg from './demo-no-fx.svg'
@@ -6,6 +8,8 @@ import demoSvg from './demo-no-fx.svg'
 import demoPng from './demo.png'
 // @ts-ignore
 import demoJpg from './demo.jpg'
+
+export const SVG_FX_LIGHT_URL = demoSvgFxLight
 
 export const SVG_FX_URL = demoSvgFx
 
