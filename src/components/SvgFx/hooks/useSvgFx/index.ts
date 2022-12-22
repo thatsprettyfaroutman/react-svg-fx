@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
-import useMeasure from 'react-use-measure'
 import mergeRefs from 'react-merge-refs'
 import { useAttrHandler } from './hooks/useAttrHandler'
 import { useTickHandlers } from './hooks/useTickHandlers'
 import { useMouse } from './hooks/useMouse'
 import { useFxItems } from './hooks/useFxItems'
+import { usePolyfilledMeasure } from './hooks/usePolyfilledMeasure'
 
 export const useSvgFx = ({
   active = true,
@@ -13,7 +13,7 @@ export const useSvgFx = ({
   active?: boolean
   loading?: boolean
 } = {}) => {
-  const [measureRef, { width, height }] = useMeasure()
+  const [measureRef, { width, height }] = usePolyfilledMeasure()
   const svgRef = useRef<SVGSVGElement>()
   const ref = mergeRefs([measureRef, svgRef])
   const { items, updateItems } = useFxItems(svgRef, { loading })

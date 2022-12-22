@@ -32,6 +32,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@juggle/resize-observer": "3.4.0",
     "@types/d3-ease": "2.0.0",
     "@types/ramda": "0.26.44",
     "@types/react": "^18.0.24",
