@@ -1,4 +1,4 @@
-import React, { FC, useRef, useLayoutEffect, useState } from 'react'
+import React, { FC, useRef, useLayoutEffect, useState, useMemo } from 'react'
 import { useSvgFx } from './hooks/useSvgFx'
 import mergeRefs from 'react-merge-refs'
 import { getElementFromHtml } from './lib'
@@ -43,13 +43,11 @@ export const SvgFx: FC<ISvgFxProps> = ({
     errored,
   })
 
-  // Handle svg loading
-  useLayoutEffect(() => {
-    const el = svgRef.current
-    if (!el || !src) {
-      return
-    }
-    const load = async () => {
+  const loadSvgString = useMemo(() => {
+    return async (src: typeof srcProp) => {
+      if (!src) {
+        return
+      }
       try {
         const svgString = await getSvgStringFromSrc(src)
         if (mounted.current) {
@@ -64,10 +62,18 @@ export const SvgFx: FC<ISvgFxProps> = ({
         }
       }
     }
-    load()
-  }, [src, mounted])
+  }, [mounted])
 
-  // Update svg dom element when svg loaded
+  // Handle svg loading
+  useLayoutEffect(() => {
+    const el = svgRef.current
+    if (!el || !src) {
+      return
+    }
+    loadSvgString(src)
+  }, [src, loadSvgString])
+
+  // Update svg dom element on svg load
   useLayoutEffect(() => {
     const el = svgRef.current
     if (!svgString || !el) {

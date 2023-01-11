@@ -1,4 +1,7 @@
 export const getElementFromHtml = (htmlString: string) => {
   const domParser = new DOMParser()
-  return domParser.parseFromString(htmlString, 'image/svg+xml')?.children?.[0]
+
+  return domParser
+    .parseFromString(htmlString, 'image/svg+xml')
+    ?.querySelector('svg')
 }

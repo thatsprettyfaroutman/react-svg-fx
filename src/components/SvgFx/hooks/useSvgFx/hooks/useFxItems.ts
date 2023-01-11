@@ -1,23 +1,39 @@
-import {
-  useMemo,
-  useLayoutEffect,
-  useCallback,
-  useState,
-  MutableRefObject,
-} from 'react'
+import { useLayoutEffect, useCallback, useState, MutableRefObject } from 'react'
 import { flatten } from 'ramda'
 import { TFx, TFxWithBox } from '../types'
 import { uid } from '../lib'
 import { DEFAULT_FX_PROPS_MAP } from './useTickHandlers'
+// import { useMounted } from '../../useMounted'
 
 type TFxPropMap = typeof DEFAULT_FX_PROPS_MAP
 type TFxPropKey = keyof TFxPropMap
+
+const getBoxes = (svg: SVGSVGElement, items: TFx[]) => {
+  // Get bounding boxes
+  const viewBox = svg?.viewBox.baseVal
+  return items.map((item) => {
+    const element = item.element as SVGPathElement
+    const box = element.getBBox()
+    return {
+      ...item,
+      box: {
+        x: box.x,
+        y: box.y,
+        width: box.width,
+        height: box.height,
+        xMid: box.x + (box.width - viewBox.width) * 0.5,
+        yMid: box.y + (box.height - viewBox.height) * 0.5,
+      },
+    }
+  })
+}
 
 export const useFxItems = (
   svgRef: MutableRefObject<SVGSVGElement | undefined | null>,
   { loading = false } = {},
 ) => {
-  const [items, setItems] = useState<TFx[]>([])
+  // const mounted = useMounted()
+  const [items, setItems] = useState<TFxWithBox[]>([])
 
   const updateItems = useCallback(() => {
     const svg = svgRef?.current
@@ -27,7 +43,7 @@ export const useFxItems = (
 
     const nextItems = Array.from(svg.querySelectorAll('[data-fx]')).map(
       (el) => {
-        const element = el as SVGElement
+        const element = el as SVGGraphicsElement
         const fxAttribute = element.getAttribute('data-fx')
         if (!fxAttribute) {
           return
@@ -48,12 +64,17 @@ export const useFxItems = (
           const props = new Map(entries)
 
           if (props.size) {
+            // Transform from center
+            element.setAttribute('transform-origin', '50% 50%')
             return {
               id: uid(),
               element,
               props,
             }
           }
+
+          // undefined items are removed by filter (line 60)
+          return undefined
         } catch (err) {
           // data-fx is not json
         }
@@ -61,13 +82,20 @@ export const useFxItems = (
     )
 
     const flatItems = flatten(nextItems).filter(Boolean) as TFx[]
+    setItems(getBoxes(svg, flatItems))
 
-    flatItems.forEach(({ element }) => {
-      element.setAttribute('transform-origin', '50% 50%')
-    })
-
-    setItems(flatItems)
-  }, [svgRef])
+    // If element is not connected try to update items again
+    // if (flatItems[0]?.element && !flatItems[0].element.isConnected) {
+    //   setTimeout(() => {
+    //     if (mounted.current) {
+    //       updateItems()
+    //     }
+    //   }, 10)
+    // }
+  }, [
+    svgRef,
+    // mounted
+  ])
 
   useLayoutEffect(() => {
     if (!svgRef.current || loading) {
@@ -76,31 +104,5 @@ export const useFxItems = (
     updateItems()
   }, [svgRef, loading, updateItems])
 
-  // Add boxes
-  return {
-    items: useMemo((): TFxWithBox[] => {
-      const svg = svgRef.current
-
-      if (!svg) {
-        return items
-      }
-
-      const viewBox = svg?.viewBox.baseVal
-      return items.map((item) => {
-        const box = (item.element as SVGPathElement).getBBox()
-        return {
-          ...item,
-          box: {
-            x: box.x,
-            y: box.y,
-            width: box.width,
-            height: box.height,
-            xMid: box.x + (box.width - viewBox.width) * 0.5,
-            yMid: box.y + (box.height - viewBox.height) * 0.5,
-          },
-        }
-      })
-    }, [svgRef, items]),
-    updateItems,
-  }
+  return { items, updateItems }
 }

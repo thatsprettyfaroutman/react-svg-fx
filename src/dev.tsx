@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import ReactDOM from 'react-dom/client'
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { SvgFx, TStatus } from './components/SvgFx'
 import * as SOURCE from './demoSource'
 
@@ -10,6 +10,9 @@ const App = styled.div`
   display: grid;
   grid-gap: 1rem;
   font-family: sans-serif;
+  min-height: 100vh;
+  background-color: #888;
+  perspective: 800px;
 `
 
 const Demo = styled.div<{ error?: boolean }>`
@@ -39,6 +42,7 @@ const DemoDemo: FC<{ name: string; src: string }> = ({
 }) => {
   const [status, setStatus] = useState<TStatus | undefined>()
   const [active, setActive] = useState(true)
+
   return (
     <Demo {...restProps} error={status === 'errored'}>
       <DemoName onClick={() => setActive(!active)}>

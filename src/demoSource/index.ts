@@ -8,6 +8,10 @@ import demoSvg from './demo-no-fx.svg'
 import demoPng from './demo.png'
 // @ts-ignore
 import demoJpg from './demo.jpg'
+// @ts-ignore
+import demoWonky from './demo-wonky.svg'
+
+export const SVG_FX_WONKY = demoWonky
 
 export const SVG_FX_LIGHT_URL = demoSvgFxLight
 

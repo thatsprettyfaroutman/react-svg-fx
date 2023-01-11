@@ -13,13 +13,17 @@ export const useSvgFx = ({
   active?: boolean
   loading?: boolean
 } = {}) => {
-  const [measureRef, { width, height }] = usePolyfilledMeasure()
+  const [measureRef, mouseBounds] = usePolyfilledMeasure()
   const svgRef = useRef<SVGSVGElement>()
   const ref = mergeRefs([measureRef, svgRef])
   const { items, updateItems } = useFxItems(svgRef, { loading })
 
   const attrHandler = useAttrHandler()
-  const mouseRef = useMouse({ svgRef, width, height })
+  const mouseRef = useMouse({
+    svgRef,
+    width: mouseBounds.width,
+    height: mouseBounds.height,
+  })
 
   const tickHandlers = useTickHandlers({
     items,
