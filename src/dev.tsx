@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import ReactDOM from 'react-dom/client'
-import styled, { css, keyframes } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { SvgFx, TStatus } from './components/SvgFx'
 import * as SOURCE from './demoSource'
 
