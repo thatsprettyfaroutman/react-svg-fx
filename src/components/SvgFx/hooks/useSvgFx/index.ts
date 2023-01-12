@@ -6,6 +6,8 @@ import { useMouse } from './hooks/useMouse'
 import { useFxItems } from './hooks/useFxItems'
 import { usePolyfilledMeasure } from './hooks/usePolyfilledMeasure'
 
+const MAX_FAIL_COUNT = 50
+
 export const useSvgFx = ({
   active = true,
   loading = false,
@@ -17,6 +19,8 @@ export const useSvgFx = ({
   const svgRef = useRef<SVGSVGElement>()
   const ref = mergeRefs([measureRef, svgRef])
   const { items, updateItems } = useFxItems(svgRef, { loading })
+
+  const failCount = useRef(0)
 
   const attrHandler = useAttrHandler()
   const mouseRef = useMouse({
@@ -48,6 +52,14 @@ export const useSvgFx = ({
       lastTime: 0,
     }
     const m = tickHandlers.length
+
+    if (failCount.current > MAX_FAIL_COUNT) {
+      // Failed to update items too many times, something is wrong with the svg
+      console.warn(
+        'Failed to update items too many times, something is wrong with the svg',
+      )
+      return
+    }
 
     if (n === 0 || m === 0) {
       // No items or tickHandlers
@@ -82,9 +94,13 @@ export const useSvgFx = ({
       }
 
       // Check if still connected, fix items if needed
-      if (!items[0].element.isConnected) {
+      if (
+        !items[0].element.isConnected ||
+        (items[0].box?.width === 0 && items[0].box?.height === 0)
+      ) {
         running = false
         updateItems()
+        failCount.current++
       }
 
       // Draw

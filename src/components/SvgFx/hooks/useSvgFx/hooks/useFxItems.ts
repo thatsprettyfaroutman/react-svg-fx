@@ -1,4 +1,10 @@
-import { useLayoutEffect, useCallback, useState, MutableRefObject } from 'react'
+import {
+  useLayoutEffect,
+  useCallback,
+  useState,
+  MutableRefObject,
+  // useRef,
+} from 'react'
 import { flatten } from 'ramda'
 import { TFx, TFxWithBox } from '../types'
 import { uid } from '../lib'
@@ -32,13 +38,14 @@ export const useFxItems = (
   svgRef: MutableRefObject<SVGSVGElement | undefined | null>,
   { loading = false } = {},
 ) => {
+  // TODO: rm mounted
   const mounted = useMounted()
+  // const wonkyFixCount = useRef(0)
   const [items, setItems] = useState<TFxWithBox[]>([])
 
   const updateItems = useCallback(() => {
-    console.log('updateItems')
     const svg = svgRef?.current
-    if (!svg) {
+    if (!svg || !mounted.current) {
       return
     }
 
@@ -86,22 +93,24 @@ export const useFxItems = (
     const itemsWithBoxes = getBoxes(svg, flatItems)
     setItems(itemsWithBoxes)
 
-    // If element is not connected try to update items again
-    if (
-      itemsWithBoxes[0]?.box.width === 0 ||
-      (flatItems[0]?.element && !flatItems[0].element.isConnected)
-    ) {
-      setTimeout(() => {
-        if (mounted.current) {
-          console.log(
-            'not connected or no size',
-            'connected ->',
-            flatItems[0].element.isConnected,
-          )
-          updateItems()
-        }
-      }, 10)
-    }
+    // // Wonky animation bug fix
+    // // ---------------------------------------------------------------------
+    // // For some reason sometimes the svg (or its elements) is not in dom at
+    // // this stage, causing getBBox (inside getBoxes func) to return {x: 0, y:0, width: 0, height:0}.
+    // // The animation is broken because of that.
+    // //
+    // // To remedy that we can check if width is 0 which it never should be or if
+    // // the element is not connected and update the items if thats the case.
+
+    // if (
+    //   itemsWithBoxes[0]?.box.width === 0 ||
+    //   (flatItems[0]?.element && !flatItems[0].element.isConnected)
+    // ) {
+    //   wonkyFixCount.current++
+    //   if (wonkyFixCount.current < 50) {
+    //     setTimeout(updateItems, 10)
+    //   }
+    // }
   }, [svgRef, mounted])
 
   useLayoutEffect(() => {
