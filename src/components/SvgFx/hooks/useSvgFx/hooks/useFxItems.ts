@@ -3,7 +3,7 @@ import { flatten } from 'ramda'
 import { TFx, TFxWithBox } from '../types'
 import { uid } from '../lib'
 import { DEFAULT_FX_PROPS_MAP } from './useTickHandlers'
-// import { useMounted } from '../../useMounted'
+import { useMounted } from '../../useMounted'
 
 type TFxPropMap = typeof DEFAULT_FX_PROPS_MAP
 type TFxPropKey = keyof TFxPropMap
@@ -32,10 +32,11 @@ export const useFxItems = (
   svgRef: MutableRefObject<SVGSVGElement | undefined | null>,
   { loading = false } = {},
 ) => {
-  // const mounted = useMounted()
+  const mounted = useMounted()
   const [items, setItems] = useState<TFxWithBox[]>([])
 
   const updateItems = useCallback(() => {
+    console.log('updateItems')
     const svg = svgRef?.current
     if (!svg) {
       return
@@ -73,7 +74,7 @@ export const useFxItems = (
             }
           }
 
-          // undefined items are removed by filter (line 60)
+          // undefined items are removed by filter (line 85)
           return undefined
         } catch (err) {
           // data-fx is not json
@@ -82,20 +83,22 @@ export const useFxItems = (
     )
 
     const flatItems = flatten(nextItems).filter(Boolean) as TFx[]
-    setItems(getBoxes(svg, flatItems))
+    const itemsWithBoxes = getBoxes(svg, flatItems)
+    setItems(itemsWithBoxes)
 
     // If element is not connected try to update items again
-    // if (flatItems[0]?.element && !flatItems[0].element.isConnected) {
-    //   setTimeout(() => {
-    //     if (mounted.current) {
-    //       updateItems()
-    //     }
-    //   }, 10)
-    // }
-  }, [
-    svgRef,
-    // mounted
-  ])
+    if (
+      itemsWithBoxes[0]?.box.width === 0 ||
+      (flatItems[0]?.element && !flatItems[0].element.isConnected)
+    ) {
+      setTimeout(() => {
+        if (mounted.current) {
+          console.log('not connected or no size')
+          updateItems()
+        }
+      }, 10)
+    }
+  }, [svgRef, mounted])
 
   useLayoutEffect(() => {
     if (!svgRef.current || loading) {
