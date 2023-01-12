@@ -98,6 +98,12 @@ export const useSvgFx = ({
         !items[0].element.isConnected ||
         (items[0].box?.width === 0 && items[0].box?.height === 0)
       ) {
+        // TODO: try on different items using modulo
+        console.log('items broken', {
+          connected: !items[0].element.isConnected,
+          width: items[0].box?.width,
+          height: items[0].box?.height,
+        })
         running = false
         updateItems()
         failCount.current++
