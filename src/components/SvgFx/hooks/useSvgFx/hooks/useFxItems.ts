@@ -3,6 +3,7 @@ import { flatten } from 'ramda'
 import { TFx, TFxWithBox } from '../types'
 import { uid } from '../lib'
 import { DEFAULT_FX_PROPS_MAP } from './useTickHandlers'
+import { useMounted } from '../../useMounted'
 
 type TFxPropMap = typeof DEFAULT_FX_PROPS_MAP
 type TFxPropKey = keyof TFxPropMap
@@ -13,6 +14,11 @@ const getBoxes = (svg: SVGSVGElement, items: TFx[]) => {
   return items.map((item) => {
     const element = item.element as SVGPathElement
     const box = element.getBBox()
+
+    if (!element.isConnected || (box.width === 0 && box.height === 0)) {
+      throw new Error('Element not connected')
+    }
+
     return {
       ...item,
       box: {
@@ -32,10 +38,11 @@ export const useFxItems = (
   { loading = false } = {},
 ) => {
   const [items, setItems] = useState<TFxWithBox[]>([])
+  const mounted = useMounted()
 
   const updateItems = useCallback(() => {
     const svg = svgRef?.current
-    if (!svg) {
+    if (!svg || !mounted.current) {
       return
     }
 
@@ -81,9 +88,14 @@ export const useFxItems = (
 
     const flatItems = flatten(nextItems).filter(Boolean) as TFx[]
 
-    const itemsWithBoxes = getBoxes(svg, flatItems)
-    setItems(itemsWithBoxes)
-  }, [svgRef])
+    try {
+      const itemsWithBoxes = getBoxes(svg, flatItems)
+      setItems(itemsWithBoxes)
+    } catch (err) {
+      console.log(err)
+      requestAnimationFrame(updateItems)
+    }
+  }, [svgRef, mounted])
 
   useLayoutEffect(() => {
     if (!svgRef.current || loading) {
