@@ -93,7 +93,11 @@ export const useFxItems = (
     ) {
       setTimeout(() => {
         if (mounted.current) {
-          console.log('not connected or no size')
+          console.log(
+            'not connected or no size',
+            'connected ->',
+            flatItems[0].element.isConnected,
+          )
           updateItems()
         }
       }, 10)
