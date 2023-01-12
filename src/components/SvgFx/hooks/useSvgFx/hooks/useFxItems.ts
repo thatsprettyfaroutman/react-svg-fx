@@ -92,7 +92,6 @@ export const useFxItems = (
       const itemsWithBoxes = getBoxes(svg, flatItems)
       setItems(itemsWithBoxes)
     } catch (err) {
-      console.log(err)
       requestAnimationFrame(updateItems)
     }
   }, [svgRef, mounted])
