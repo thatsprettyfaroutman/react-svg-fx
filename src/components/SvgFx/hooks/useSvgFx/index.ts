@@ -16,7 +16,7 @@ export const useSvgFx = ({
   const [measureRef, mouseBounds] = usePolyfilledMeasure()
   const svgRef = useRef<SVGSVGElement>()
   const ref = mergeRefs([measureRef, svgRef])
-  const { items, updateItems } = useFxItems(svgRef, { loading })
+  const { items } = useFxItems(svgRef, { loading })
 
   const attrHandler = useAttrHandler()
   const mouseRef = useMouse({
