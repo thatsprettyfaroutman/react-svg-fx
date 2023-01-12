@@ -53,16 +53,18 @@ export const useSvgFx = ({
     }
     const m = tickHandlers.length
 
+    if (n === 0 || m === 0) {
+      // No items or tickHandlers
+      return
+    }
+
+    const testItemIndex = failCount.current % n
+    const testItem = items[testItemIndex]
     if (failCount.current > MAX_FAIL_COUNT) {
       // Failed to update items too many times, something is wrong with the svg
       console.warn(
         'Failed to update items too many times, something is wrong with the svg',
       )
-      return
-    }
-
-    if (n === 0 || m === 0) {
-      // No items or tickHandlers
       return
     }
 
@@ -95,15 +97,18 @@ export const useSvgFx = ({
 
       // Check if still connected, fix items if needed
       if (
-        !items[0].element.isConnected ||
-        (items[0].box?.width === 0 && items[0].box?.height === 0)
+        !testItem.element.isConnected ||
+        (testItem.box?.width === 0 && testItem.box?.height === 0)
       ) {
-        // TODO: try on different items using modulo
-        console.log('items broken', {
-          connected: !items[0].element.isConnected,
-          width: items[0].box?.width,
-          height: items[0].box?.height,
-        })
+        console.log(
+          'test item broken',
+          {
+            connected: !testItem.element.isConnected,
+            width: testItem.box?.width,
+            height: testItem.box?.height,
+          },
+          testItem,
+        )
         running = false
         updateItems()
         failCount.current++
